@@ -29,5 +29,3 @@ FOUNDATION_EXPORT double HBRPagingViewVersionNumber;
 
 //! Project version string for HBRPagingView.
 FOUNDATION_EXPORT const unsigned char HBRPagingViewVersionString[];
-
-// In this header, you should import all the public headers of your framework using statements like #import <HBRPagingView/PublicHeader.h>
