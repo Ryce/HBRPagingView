@@ -24,20 +24,20 @@
 
 import UIKit
 
-@objc protocol HBRPagingViewDelegate : NSObjectProtocol, UIScrollViewDelegate {
+@objc public protocol HBRPagingViewDelegate : NSObjectProtocol, UIScrollViewDelegate {
   optional func pagingView(pagingView: HBRPagingView, shouldSelectPage page: UInt) -> Bool
   optional func pagingView(pagingView: HBRPagingView, didSelectPage page: UInt)
 }
 
-protocol HBRPagingViewDataSource : NSObjectProtocol {
+public protocol HBRPagingViewDataSource : NSObjectProtocol {
   func pagingView(pagingView: HBRPagingView, viewForPage index: UInt) -> AnyObject
   func numberOfPages(pagingView: HBRPagingView) -> UInt
 }
 
 public class HBRPagingView: UIScrollView, UIScrollViewDelegate {
   var cachedPages = Dictionary<UInt, AnyObject>()
-  weak var pagingDelegate: HBRPagingViewDelegate?
-  weak var dataSource: HBRPagingViewDataSource?
+  public weak var pagingDelegate: HBRPagingViewDelegate?
+  public weak var dataSource: HBRPagingViewDataSource?
   var registeredClasses = Dictionary<String, AnyClass>()
   
   override public func drawRect(rect: CGRect) {
@@ -45,7 +45,7 @@ public class HBRPagingView: UIScrollView, UIScrollViewDelegate {
     self.setupView()
   }
   
-  func reloadData() {
+  public func reloadData() {
     self.setupView()
   }
 
@@ -97,11 +97,11 @@ public class HBRPagingView: UIScrollView, UIScrollViewDelegate {
     (page as! UIView).frame = CGRectMake(CGFloat(pageIndex) * self.bounds.size.width, 0, self.bounds.size.width, self.bounds.size.height)
   }
   
-  func registerClass(pageClass: AnyClass, forPageReuseIdentifier identifier: String) {
+  public func registerClass(pageClass: AnyClass, forPageReuseIdentifier identifier: String) {
       self.registeredClasses[identifier] = pageClass
   }
   
-  func dequeueReusablePageWithIdentifier(identifier: String, forIndex index: UInt) -> AnyObject {
+  public func dequeueReusablePageWithIdentifier(identifier: String, forIndex index: UInt) -> AnyObject {
     if self.registeredClasses[identifier] == nil {
       NSException(name: "PageNotRegisteredException", reason: "The identifier did not match any of the registered classes", userInfo: nil).raise()
       return HBRPagingViewPage()
@@ -144,9 +144,9 @@ public class HBRPagingView: UIScrollView, UIScrollViewDelegate {
 
 import UIKit
 
-class HBRPagingViewPage: UIView {
+public class HBRPagingViewPage: UIView {
   
-  let contentView = UIView()
+  public let contentView = UIView()
   
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -154,7 +154,7 @@ class HBRPagingViewPage: UIView {
     self.addSubview(self.contentView)
   }
   
-  required init(coder aDecoder: NSCoder) {
+  required public init(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     self.contentView.frame = self.bounds
     self.addSubview(self.contentView)
