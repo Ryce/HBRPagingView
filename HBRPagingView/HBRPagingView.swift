@@ -148,14 +148,8 @@ public class HBRPagingViewPage: UIView {
   
   public let contentView = UIView()
   
-  override init(frame: CGRect) {
-    super.init(frame: frame)
-    self.contentView.frame = self.bounds
-    self.addSubview(self.contentView)
-  }
-  
-  required public init(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
+  public override func drawRect(rect: CGRect) {
+    super.drawRect(rect)
     self.contentView.frame = self.bounds
     self.addSubview(self.contentView)
   }
