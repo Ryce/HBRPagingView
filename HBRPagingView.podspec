@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "HBRPagingView"
-  s.version      = "0.1.1"
+  s.version      = "0.1.2"
   s.summary      = "simple and elegant paging view with UITableView Style memory preserving reusability functionality"
 
   s.description  = <<-DESC
@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   s.author             = { "Ryce" => "hamon@riazy.com" }
   s.ios.deployment_target = "8.0"
 
-  s.source       = { :git => "https://github.com/Ryce/HBRPagingView.git", :tag => "0.1.0" }
+  s.source       = { :git => "https://github.com/Ryce/HBRPagingView.git", :tag => "0.1.2" }
 
   s.source_files  = "HBRPagingView/*.swift"
   s.requires_arc = true
