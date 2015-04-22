@@ -34,13 +34,13 @@ protocol HBRPagingViewDataSource : NSObjectProtocol {
   func numberOfPages(pagingView: HBRPagingView) -> UInt
 }
 
-class HBRPagingView: UIScrollView, UIScrollViewDelegate {
+public class HBRPagingView: UIScrollView, UIScrollViewDelegate {
   var cachedPages = Dictionary<UInt, AnyObject>()
   weak var pagingDelegate: HBRPagingViewDelegate?
   weak var dataSource: HBRPagingViewDataSource?
   var registeredClasses = Dictionary<String, AnyClass>()
   
-  override func drawRect(rect: CGRect) {
+  override public func drawRect(rect: CGRect) {
     super.drawRect(rect)
     self.setupView()
   }
@@ -125,7 +125,7 @@ class HBRPagingView: UIScrollView, UIScrollViewDelegate {
     }
   }
   
-  func scrollViewDidScroll(scrollView: UIScrollView) {
+  public func scrollViewDidScroll(scrollView: UIScrollView) {
     if let numberOfPages = self.dataSource?.numberOfPages(self) {
       let offsetAmount = Int(fmin(fmax(0, self.contentOffset.x / self.bounds.size.width), CGFloat(numberOfPages)))
       let direction = ((offsetAmount - Int(self.currentPage())) == 0 ? 1 : -1)
@@ -141,3 +141,24 @@ class HBRPagingView: UIScrollView, UIScrollViewDelegate {
   }
   
 }
+
+import UIKit
+
+class HBRPagingViewPage: UIView {
+  
+  let contentView = UIView()
+  
+  override init(frame: CGRect) {
+    super.init(frame: frame)
+    self.contentView.frame = self.bounds
+    self.addSubview(self.contentView)
+  }
+  
+  required init(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+    self.contentView.frame = self.bounds
+    self.addSubview(self.contentView)
+  }
+  
+}
+

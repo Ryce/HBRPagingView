@@ -11,7 +11,6 @@
 		DA1F0C221AE8492F00BA92E0 /* HBRPagingView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA1F0C161AE8492F00BA92E0 /* HBRPagingView.framework */; };
 		DA1F0C291AE8492F00BA92E0 /* HBRPagingViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1F0C281AE8492F00BA92E0 /* HBRPagingViewTests.swift */; };
 		DA1F0C301AE849C700BA92E0 /* HBRPagingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1F0C0B1AE8486B00BA92E0 /* HBRPagingView.swift */; };
-		DA1F0C311AE849C700BA92E0 /* HBRPagingViewPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1F0C0C1AE8486B00BA92E0 /* HBRPagingViewPage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,7 +25,6 @@
 
 /* Begin PBXFileReference section */
 		DA1F0C0B1AE8486B00BA92E0 /* HBRPagingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HBRPagingView.swift; path = HBRPagingView/HBRPagingView.swift; sourceTree = "<group>"; };
-		DA1F0C0C1AE8486B00BA92E0 /* HBRPagingViewPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HBRPagingViewPage.swift; path = HBRPagingView/HBRPagingViewPage.swift; sourceTree = "<group>"; };
 		DA1F0C0D1AE8486B00BA92E0 /* info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = info.plist; path = HBRPagingView/info.plist; sourceTree = "<group>"; };
 		DA1F0C161AE8492F00BA92E0 /* HBRPagingView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HBRPagingView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA1F0C1B1AE8492F00BA92E0 /* HBRPagingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HBRPagingView.h; path = HBRPagingView/HBRPagingView.h; sourceTree = "<group>"; };
@@ -68,7 +66,6 @@
 			children = (
 				DA1F0C1B1AE8492F00BA92E0 /* HBRPagingView.h */,
 				DA1F0C0B1AE8486B00BA92E0 /* HBRPagingView.swift */,
-				DA1F0C0C1AE8486B00BA92E0 /* HBRPagingViewPage.swift */,
 				DA1F0C101AE8489100BA92E0 /* Supporting Files */,
 			);
 			name = HBRPagingView;
@@ -215,7 +212,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA1F0C301AE849C700BA92E0 /* HBRPagingView.swift in Sources */,
-				DA1F0C311AE849C700BA92E0 /* HBRPagingViewPage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -472,6 +468,7 @@
 				DA1F0C2C1AE8492F00BA92E0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		DA1F0C2D1AE8492F00BA92E0 /* Build configuration list for PBXNativeTarget "HBRPagingViewTests" */ = {
 			isa = XCConfigurationList;
@@ -480,6 +477,7 @@
 				DA1F0C2F1AE8492F00BA92E0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
