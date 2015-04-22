@@ -1,2 +1,2 @@
 # HBRPagingView
-simple and elegant paging view with reusability functionality
+simple and elegant paging view with UITableView Style memory preserving reusability functionality
