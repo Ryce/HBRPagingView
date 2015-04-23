@@ -130,6 +130,9 @@ public class HBRPagingView: UIScrollView, UIScrollViewDelegate {
       let offsetAmount = Int(fmin(fmax(0, self.contentOffset.x / self.bounds.size.width), CGFloat(numberOfPages)))
       let direction = ((offsetAmount - Int(self.currentPage())) == 0 ? 1 : -1)
       let index = Int(self.currentPage()) + direction
+      if index >= Int(numberOfPages) {
+        return
+      }
       if let page: AnyObject = self.dataSource?.pagingView(self, viewForPage: UInt(index)) {
         self.addPage(page, forIndex: UInt(index))
       }
