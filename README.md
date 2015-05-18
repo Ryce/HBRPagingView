@@ -17,7 +17,7 @@ using cartage
 
 set delegate and datasource, register your class (you can also use the basic HBRPagingViewPage)
 
-```
+```Swift
 self.pagingView?.dataSource = self
 self.pagingView?.pagingDelegate = self
 self.pagingView?.registerClass(CustomPagingViewPage.classForCoder(), forPageReuseIdentifier: "identifier")
@@ -25,7 +25,7 @@ self.pagingView?.registerClass(CustomPagingViewPage.classForCoder(), forPageReus
 
 datasource should return number of pages and the page, dequeueing is available and should be used
 
-```
+```Swift
 // MARK: - PagingView Delegate & DataSource
   
 func numberOfPages(pagingView: HBRPagingView) -> UInt {
