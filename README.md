@@ -7,7 +7,7 @@ simple and elegant paging view with UITableView Style memory preserving reusabil
 
 using cocoapods
 
-pod 'HBRPagingView', '~> 0.2.1'
+`pod 'HBRPagingView', '~> 0.2.1'`
 
 using cartage
 
@@ -15,7 +15,29 @@ using cartage
 
 # Usage
 
-tbd
+set delegate and datasource, register your class (you can also use the basic HBRPagingViewPage)
+
+```
+    self.pagingView?.dataSource = self
+    self.pagingView?.pagingDelegate = self
+    self.pagingView?.registerClass(CustomPagingViewPage.classForCoder(), forPageReuseIdentifier: "identifier")
+```
+
+datasource should return number of pages and the page, dequeueing is available and should be used
+
+```
+  // MARK: - PagingView Delegate & DataSource
+  
+  func numberOfPages(pagingView: HBRPagingView) -> UInt {
+    return 6
+  }
+  
+  func pagingView(pagingView: HBRPagingView, viewForPage index: UInt) -> AnyObject {
+    let page = pagingView.dequeueReusablePageWithIdentifier("identifier", forIndex: index) as! PagingViewPage
+    page.imageView.image = UIImage(named: "\(index)")
+    return page
+  }
+```
 
 # Contact
 
