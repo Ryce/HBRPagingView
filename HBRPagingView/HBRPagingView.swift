@@ -25,137 +25,178 @@
 import UIKit
 
 @objc public protocol HBRPagingViewDelegate : NSObjectProtocol, UIScrollViewDelegate {
-  optional func pagingView(pagingView: HBRPagingView, shouldSelectPage page: UInt) -> Bool
-  optional func pagingView(pagingView: HBRPagingView, didSelectPage page: UInt)
+    @objc optional func pagingView(_ pagingView: HBRPagingView, shouldSelectPage page: UInt) -> Bool
+    @objc optional func pagingView(_ pagingView: HBRPagingView, didSelectPage page: UInt)
 }
 
 public protocol HBRPagingViewDataSource : NSObjectProtocol {
-  func pagingView(pagingView: HBRPagingView, viewForPage index: UInt) -> AnyObject
-  func numberOfPages(pagingView: HBRPagingView) -> UInt
+    func pagingView(_ pagingView: HBRPagingView, viewForPage index: UInt) -> AnyObject
+    func numberOfPages(_ pagingView: HBRPagingView) -> UInt
 }
 
 public class HBRPagingView: UIScrollView, UIScrollViewDelegate {
-  var cachedPages = Dictionary<UInt, AnyObject>()
-  public weak var pagingDelegate: HBRPagingViewDelegate?
-  public weak var dataSource: HBRPagingViewDataSource?
-  var registeredClasses = Dictionary<String, AnyClass>()
-  
-  override public func drawRect(rect: CGRect) {
-    super.drawRect(rect)
-    self.setupView()
-  }
-  
-  public func reloadData() {
-    self.setupView()
-  }
-
-  func setupView() {
-    self.pagingEnabled = true
-    self.delegate = self
-    if self.dataSource == nil {
-      return // BAIL
-    }
-    let nop = self.dataSource!.numberOfPages(self)
-    if nop == 0 {
-      return // BAIL
+    
+    public weak var pagingDelegate: HBRPagingViewDelegate?
+    public weak var dataSource: HBRPagingViewDataSource?
+    
+    private var cachedPages = [UInt: AnyObject]()
+    private var registeredClasses = [String: AnyClass]()
+    
+    override open func draw(_ rect: CGRect) {
+        super.draw(rect)
+        self.setupView()
     }
     
-    self.contentSize = CGSizeMake(self.bounds.size.width * CGFloat(nop), self.bounds.size.height)
-    let pageIndex = self.currentPage()
+    open func reloadData() {
+        self.setupView()
+    }
     
-    if self.dataSource?.numberOfPages(self) >= pageIndex {
-      if let page: AnyObject = self.dataSource?.pagingView(self, viewForPage: pageIndex) {
-        self.addPage(page, forIndex: pageIndex)
-      }
-      if pageIndex > 0 {
-        if let page: AnyObject = self.dataSource?.pagingView(self, viewForPage: pageIndex - 1) {
-          self.addPage(page, forIndex: pageIndex - 1)
+    private func setupView() {
+        self.isPagingEnabled = true
+        self.delegate = self
+        if self.dataSource == nil {
+            return // BAIL
         }
-      }
-      if self.dataSource?.numberOfPages(self) > pageIndex {
-        if let page: AnyObject = self.dataSource?.pagingView(self, viewForPage: pageIndex + 1) {
-          self.addPage(page, forIndex: pageIndex + 1)
+        let nop = self.dataSource!.numberOfPages(self)
+        if nop == 0 {
+            return // BAIL
         }
-      }
-    }
-  }
-  
-  func addPage(page: AnyObject, forIndex pageIndex: UInt) {
-    if let cachedPage: AnyObject = self.cachedPages[pageIndex] {
-      if !cachedPage.isEqual(page) {
-        self.cachedPages[pageIndex] = page
-        if page.superview != self {
-          self.addSubview(page as! UIView)
+        
+        self.contentSize = CGSize(width: self.bounds.size.width * CGFloat(nop), height: self.bounds.size.height)
+        let pageIndex = self.currentPage()
+        
+        if self.dataSource?.numberOfPages(self) >= pageIndex {
+            if let page: AnyObject = self.dataSource?.pagingView(self, viewForPage: pageIndex) {
+                self.addPage(page, forIndex: pageIndex)
+            }
+            if pageIndex > 0 {
+                if let page: AnyObject = self.dataSource?.pagingView(self, viewForPage: pageIndex - 1) {
+                    self.addPage(page, forIndex: pageIndex - 1)
+                }
+            }
+            if self.dataSource?.numberOfPages(self) > pageIndex {
+                if let page: AnyObject = self.dataSource?.pagingView(self, viewForPage: pageIndex + 1) {
+                    self.addPage(page, forIndex: pageIndex + 1)
+                }
+            }
         }
-      }
-    } else {
-      self.cachedPages[pageIndex] = page
-      if page.superview != self {
-        self.addSubview(page as! UIView)
-      }
     }
-    (page as! UIView).frame = CGRectMake(CGFloat(pageIndex) * self.bounds.size.width, 0, self.bounds.size.width, self.bounds.size.height)
-  }
-  
-  public func registerClass(pageClass: AnyClass, forPageReuseIdentifier identifier: String) {
-      self.registeredClasses[identifier] = pageClass
-  }
-  
-  public func dequeueReusablePageWithIdentifier(identifier: String, forIndex index: UInt) -> AnyObject {
-    if self.registeredClasses[identifier] == nil {
-      NSException(name: "PageNotRegisteredException", reason: "The identifier did not match any of the registered classes", userInfo: nil).raise()
-      return HBRPagingViewPage()
-    }
-    if let page: AnyObject = self.cachedPages[index] {
-      return page
-    } else {
-      for key: UInt in self.cachedPages.keys.array {
-        let distance = fabs(Double(key) - Double(self.currentPage()))
-        if distance > 1 && self.cachedPages[key]!.isKindOfClass(self.registeredClasses[identifier]!) {
-          // still have to check if that same object has been used somewhere else
-          let page: AnyObject = self.cachedPages[key]!
-          self.cachedPages.removeValueForKey(key)
-          return page
+    
+    private func addPage(_ page: AnyObject, forIndex pageIndex: UInt) {
+        if let cachedPage: AnyObject = self.cachedPages[pageIndex] {
+            if !cachedPage.isEqual(page) {
+                self.cachedPages[pageIndex] = page
+                if page.superview != self {
+                    self.addSubview(page as! UIView)
+                }
+            }
+        } else {
+            self.cachedPages[pageIndex] = page
+            if page.superview != self {
+                self.addSubview(page as! UIView)
+            }
         }
-      }
-      let newInstance = self.registeredClasses[identifier]!.new() as! HBRPagingViewPage
-      newInstance.frame = self.bounds
-      newInstance.contentView.frame = newInstance.bounds
-      return newInstance
+        (page as! UIView).frame = CGRect(x: CGFloat(pageIndex) * self.bounds.size.width, y: 0, width: self.bounds.size.width, height: self.bounds.size.height)
     }
-  }
-  
-  public func scrollViewDidScroll(scrollView: UIScrollView) {
-    if let numberOfPages = self.dataSource?.numberOfPages(self) {
-      let offsetAmount = Int(fmin(fmax(0, self.contentOffset.x / self.bounds.size.width), CGFloat(numberOfPages)))
-      let direction = ((offsetAmount - Int(self.currentPage())) == 0 ? 1 : -1)
-      let index = Int(self.currentPage()) + direction
-      if index >= Int(numberOfPages) {
-        return
-      }
-      if let page: AnyObject = self.dataSource?.pagingView(self, viewForPage: UInt(index)) {
-        self.addPage(page, forIndex: UInt(index))
-      }
+    
+    open func register(_ pageClass: AnyClass, forPageReuseIdentifier identifier: String) {
+        self.registeredClasses[identifier] = pageClass
     }
-  }
-  
-  func currentPage() -> UInt {
-    return UInt(round(self.contentOffset.x/self.bounds.size.width))
-  }
-  
+    
+    open func dequeueReusablePage(with identifier: String, forIndex index: UInt) -> AnyObject {
+        if self.registeredClasses[identifier] == nil {
+            NSException(name: NSExceptionName(rawValue: "PageNotRegisteredException"), reason: "The identifier did not match any of the registered classes", userInfo: nil).raise()
+            return HBRPagingViewPage()
+        }
+        if let page: AnyObject = self.cachedPages[index] {
+            return page
+        } else {
+            for key: UInt in self.cachedPages.keys {
+                let distance = fabs(Double(key) - Double(self.currentPage()))
+                if distance > 1 && self.cachedPages[key]!.isKind(of: self.registeredClasses[identifier]!) {
+                    // still have to check if that same object has been used somewhere else
+                    let page: AnyObject = self.cachedPages[key]!
+                    self.cachedPages.removeValue(forKey: key)
+                    return page
+                }
+            }
+            
+            HBRPagingViewPage.self
+            
+            let objType = registeredClasses[identifier] as! HBRPagingViewPage.Type
+            let newInstance = objType.init()
+            newInstance.frame = self.bounds
+            newInstance.contentView.frame = newInstance.bounds
+            return newInstance
+        }
+    }
+    
+    open func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if let numberOfPages = self.dataSource?.numberOfPages(self) {
+            let offsetAmount = Int(fmin(fmax(0, self.contentOffset.x / self.bounds.size.width), CGFloat(numberOfPages)))
+            let direction = ((offsetAmount - Int(self.currentPage())) == 0 ? 1 : -1)
+            let index = Int(self.currentPage()) + direction
+            if index >= Int(numberOfPages) {
+                return
+            }
+            if let page: AnyObject = self.dataSource?.pagingView(self, viewForPage: UInt(index)) {
+                self.addPage(page, forIndex: UInt(index))
+            }
+        }
+    }
+    
+    func currentPage() -> UInt {
+        return UInt(round(self.contentOffset.x/self.bounds.size.width))
+    }
+    
 }
 
 import UIKit
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+    switch (lhs, rhs) {
+    case let (l?, r?):
+        return l < r
+    case (nil, _?):
+        return true
+    default:
+        return false
+    }
+}
 
-public class HBRPagingViewPage: UIView {
-  
-  public let contentView = UIView()
-  
-  public override func drawRect(rect: CGRect) {
-    super.drawRect(rect)
-    self.contentView.frame = self.bounds
-    self.addSubview(self.contentView)
-  }
-  
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func >= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+    switch (lhs, rhs) {
+    case let (l?, r?):
+        return l >= r
+    default:
+        return !(lhs < rhs)
+    }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+    switch (lhs, rhs) {
+    case let (l?, r?):
+        return l > r
+    default:
+        return rhs < lhs
+    }
+}
+
+
+open class HBRPagingViewPage: UIView {
+    
+    open let contentView = UIView()
+    
+    open override func draw(_ rect: CGRect) {
+        super.draw(rect)
+        self.contentView.frame = self.bounds
+        self.addSubview(self.contentView)
+    }
+    
 }
 
