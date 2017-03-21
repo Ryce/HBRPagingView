@@ -29,13 +29,13 @@ datasource should return number of pages and the page, dequeueing is available a
 // MARK: - PagingView Delegate & DataSource
   
 func numberOfPages(pagingView: HBRPagingView) -> UInt {
-  return 6
+  	return 6
 }
   
 func pagingView(pagingView: HBRPagingView, viewForPage index: UInt) -> AnyObject {
-  let page = pagingView.dequeueReusablePageWithIdentifier("identifier", forIndex: index) as! PagingViewPage
-  page.imageView.image = UIImage(named: "\(index)")
-  return page
+  	let page = pagingView.dequeueReusablePageWithIdentifier("identifier", forIndex: index) as! PagingViewPage
+  	page.imageView.image = UIImage(named: "\(index)")
+  	return page
 }
 ```
 
